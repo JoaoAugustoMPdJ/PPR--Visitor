@@ -70,7 +70,9 @@ Esse diagrama representa a interação entre o `Visitor`, os elementos que ele v
 - O `Visitor` é passado a cada `Element`, permitindo a execução de uma operação sem que o `Element` precise conhecer os detalhes da operação.
 
 ### Consequências
-- **Vantagens**: Facilita a adição de novas operações, permitindo maior flexibilidade.
+- **Vantagens**:
+- Facilita a adição de novas operações, permitindo maior flexibilidade.
+- Agrupa operações relacionadas e separa operações não relacionadas: reduz espalhamento de funcionalidades e embaralhamento.
 - **Desvantagens**:
  - Dificulta a adição de novos tipos de elementos, pois todos os visitantes existentes precisam ser atualizados.
  - Quebra de encapsulamento: métodos e dados usados pelo visitor têm de estar acessíveis.
