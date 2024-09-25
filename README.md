@@ -113,3 +113,159 @@ class ElementB implements Element {
 ```
 
 Aqui, os elementos (ElementA e ElementB) aceitam um visitante (Visitor), que executa operações distintas dependendo do tipo de elemento.
+
+
+### Meu exemplo
+
+Cenário: Temos uma estrutura de classes que representa diferentes tipos de elementos de uma loja, como Livro e Música. Vamos usar o padrão Visitor para calcular o preço total dos itens e para exibir detalhes. 
+
+
+#### Diagrama
+
+```plantuml
+@startuml
+
+interface Elemento {
+    +aceitar(visitor: Visitor)
+}
+
+interface Visitor {
+    +visitar(livro: Livro)
+    +visitar(musica: Musica)
+}
+
+class Livro {
+    -titulo: String
+    -preco: double
+    +getPreco(): double
+    +getTitulo(): String
+    +aceitar(visitor: Visitor)
+}
+
+class Musica {
+    -titulo: String
+    -preco: double
+    +getPreco(): double
+    +getTitulo(): String
+    +aceitar(visitor: Visitor)
+}
+
+class PrecoVisitor {
+    -totalPreco: double
+    +visitar(livro: Livro)
+    +visitar(musica: Musica)
+    +getTotalPreco(): double
+}
+
+Elemento <|.. Livro
+Elemento <|.. Musica
+Visitor <|.. PrecoVisitor
+
+@enduml
+```
+
+```java
+
+// Elemento
+interface Elemento {
+    void aceitar(Visitor visitante);
+}
+
+// Visitante
+interface Visitor {
+    void visitar(Livro livro);
+    void visitar(Musica musica);
+}
+
+class Livro implements Elemento {
+    private String titulo;
+    private double preco;
+
+    public Livro(String titulo, double preco) {
+        this.titulo = titulo;
+        this.preco = preco;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    @Override
+    public void aceitar(Visitor visitante) {
+        visitante.visitar(this);
+    }
+}
+
+class Musica implements Elemento {
+    private String titulo;
+    private double preco;
+
+    public Musica(String titulo, double preco) {
+        this.titulo = titulo;
+        this.preco = preco;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    @Override
+    public void aceitar(Visitor visitante) {
+        visitante.visitar(this);
+    }
+}
+
+class PrecoVisitor implements Visitor {
+    private double totalPreco;
+
+    @Override
+    public void visitar(Livro livro) {
+        totalPreco += livro.getPreco();
+        System.out.println("Visitando livro: " + livro.getTitulo() + ", Preço: " + livro.getPreco());
+    }
+
+    @Override
+    public void visitar(Musica musica) {
+        totalPreco += musica.getPreco();
+        System.out.println("Visitando música: " + musica.getTitulo() + ", Preço: " + musica.getPreco());
+    }
+
+    public double getTotalPreco() {
+        return totalPreco;
+    }
+}
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Loja {
+    public static void main(String[] args) {
+        List<Elemento> elementos = new ArrayList<>();
+        elementos.add(new Livro("Java Completo", 49.90));
+        elementos.add(new Musica("Hit do Verão", 29.90));
+
+        PrecoVisitor precoVisitor = new PrecoVisitor();
+        
+        for (Elemento elemento : elementos) {
+            elemento.aceitar(precoVisitor);
+        }
+
+        System.out.println("Preço total: " + precoVisitor.getTotalPreco());
+    }
+}
+
+```
+#### Explicação
+- Elemento: Define a interface Elemento que tem um método aceitar para receber um visitante.
+- Visitante: Define a interface Visitor com métodos para visitar diferentes tipos de elementos.
+- Classes Concretas: Livro e Musica implementam Elemento e aceitam um visitante.
+- Visitante Concreto: PrecoVisitor implementa Visitor e calcula o preço total, além de imprimir detalhes dos itens.
+- Uso: Na classe Loja, instanciamos os elementos e usamos o visitante para calcular o preço total.
